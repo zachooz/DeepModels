@@ -132,8 +132,6 @@ def sample_noise(batch_size, dim):
 def load_image_batch(dirname, batch_size=128, shuffle_buffer_size=250000, n_threads=2):
 
     # Function used to load and pre-process image files
-    # (Have to define this ahead of time b/c Python does allow multi-line
-    #    lambdas, *grumble*)
     def load_and_process_image(filename):
         # Load image
         image = tf.image.decode_jpeg(tf.read_file(filename), channels=3)
@@ -157,14 +155,9 @@ def load_image_batch(dirname, batch_size=128, shuffle_buffer_size=250000, n_thre
     # Prefetch the next batch while the GPU is training
     dataset = dataset.prefetch(1)
 
-    # Return an iterator over this dataset that we can
-    #    re-initialize for each new epoch
     return dataset.make_initializable_iterator()
 
-# --------------------------------------------------------------------------------------
 
-
-# image_batch is a TF node carrying a batch of images loaded from disk
 dataset_iterator = load_image_batch(img_dir,
                                     batch_size=batch_size,
                                     n_threads=thread_count)
