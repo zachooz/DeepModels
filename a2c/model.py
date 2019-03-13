@@ -8,19 +8,29 @@ class A2C:
         self.game = gym.make('CartPole-v1')
         self.num_actions = self.game.action_space.n
         self.state_size = self.game.observation_space.shape[0]
-
+        
+        # list of game states, rewards, actions for entire game in order
         self.state_input = tf.placeholder(tf.float32, [None, self.state_size], name="state_input")
+        self.rewards = tf.placeholder(shape=[None], dtype=tf.float32, name="rewards")
+        self.actions = tf.placeholder(shape=[None], dtype=tf.int32, name="actions")
 
         self.learning_rate = 0.004
         self.discount_reward_by = 0.99
-
+        
+        # The predicted values for the game states
         self.state_value = self.critic()
+        
+        # The action probabilites for the game states so len will be num_actions * len(state_input)]
         self.actor_probs = self.actor()
-
-        self.rewards = tf.placeholder(shape=[None], dtype=tf.float32, name="rewards")
-        self.actions = tf.placeholder(shape=[None], dtype=tf.int32, name="actions")
+        
+        # builds a list of the indexes of actions taken in self.actor_probs
+        # [0, num_actions, 2 * num_actions, ....., num states * num_actions] + action take should properly generate this list
         self.indicies = tf.range(0, tf.shape(self.actor_probs)[0]) * self.num_actions + self.actions
+        
+        # get probability of taken actions
         self.actProbs = tf.gather(tf.reshape(self.actor_probs, [-1]), self.indicies)
+        
+        # losses
         self.advantage = self.rewards - self.state_value
         self.actor_loss = -tf.reduce_mean(tf.log(self.actProbs) * self.advantage)
         self.critic_loss = tf.losses.mean_squared_error(self.rewards, tf.reshape(self.state_value, [-1]))
@@ -68,6 +78,7 @@ class A2C:
         return self.actor_loss + self.critic_loss
 
     def train_episode(self):
+        # run an entire game
         state = self.game.reset()
         states = []
         rewards = []
@@ -84,8 +95,11 @@ class A2C:
                 break
 
         # print(np.sum(rewards))
-
+        
+        # discount rewards from game
         rewards = self.discount_rewards(rewards[:])
+        
+        # train on game result
         self.session.run(self.train_op, feed_dict={self.state_input: states, self.rewards: rewards, self.actions: actions})
 
     def discount_rewards(self, rewards):
