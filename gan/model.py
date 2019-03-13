@@ -1,7 +1,3 @@
-'''
-IMPORTANT: DO NOT modify the existing stencil code or else it may not be compatible with the Autograder
-If you find any problems, report to TA's.
-'''
 import tensorflow as tf
 import numpy as np
 from scipy.misc import imsave
