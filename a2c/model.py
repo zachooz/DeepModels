@@ -31,8 +31,15 @@ class A2C:
         self.actProbs = tf.gather(tf.reshape(self.actor_probs, [-1]), self.indicies)
         
         # losses
+        
+        # advantage is the differnce between the discounted reward and the reward we predicted for a each given state
         self.advantage = self.rewards - self.state_value
-        self.actor_loss = -tf.reduce_mean(tf.log(self.actProbs) * self.advantage)
+        
+        # if advantage is negative, the predicted reward was greater than the actual, so we want to lower actProbs
+        # if advantage is positive, the predicted reward was less than the actual, so we want to raise actProbs
+        self.actor_loss = tf.reduce_mean(-tf.log(self.actProbs) * self.advantage)
+        
+        # MSE works because we want the predicted values to be the same
         self.critic_loss = tf.losses.mean_squared_error(self.rewards, tf.reshape(self.state_value, [-1]))
 
         self.loss_val = self.loss()
