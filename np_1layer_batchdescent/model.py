@@ -50,11 +50,6 @@ class Model:
         x = data[index:index+self.batchSz]
         y = labels[index:index+self.batchSz]
 
-        # forward pass
-        # print("X", x)
-        # print("Y", y)
-        # print("W", self.W)
-        # print("B", self.b)
         output = np.dot(x, self.W) + self.b
         # print("o", output)
         softmaxed = self.softmax(output)
@@ -71,10 +66,7 @@ class Model:
 
         g_mean = np.mean(gradient, axis=0)
         self.b = self.b - self.learning_rate * g_mean
-        # gradient = gradient[np.newaxis, :]
-        # print(gradient.shape)
-        # print(gradient)
-        # print(np.transpose(x[np.newaxis, :]).shape)
+
         gradient = np.matmul(np.transpose(x), gradient)
         self.W = self.W - self.learning_rate * gradient
 
@@ -87,7 +79,7 @@ class Model:
         return:
             array with softmax applied elementwise.
         """
-        e = e = np.exp(x - np.max(x, axis=1)[:, None])  # subtract max to avoid large exponent values e = np.exp(x - np.max(x))
+        e = np.exp(x - np.max(x, axis=1)[:, None])  # subtract max to avoid large exponent values e = np.exp(x - np.max(x))
         return e / np.sum(e, axis=1)[:, None]
 
     def accuracy_function(self, test_images, test_labels):
