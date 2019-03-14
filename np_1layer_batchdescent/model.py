@@ -50,7 +50,7 @@ class Model:
         x = data[index:index+self.batchSz]
         y = labels[index:index+self.batchSz]
 
-        output = np.dot(x, self.W) + self.b
+        output = np.matmul(x, self.W) + self.b
         # print("o", output)
         softmaxed = self.softmax(output)
         # loss = -1 * np.sum(np.log(softmaxed))
