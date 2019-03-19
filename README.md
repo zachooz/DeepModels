@@ -12,3 +12,8 @@ gan: Generative adverserial network built to generate faces
 np_1layer_batchdecent: Manually built network (numpy math operations) of one layer using minibatch gradient descent.
 
 rnn: Recurrent neural network built to predict the next word
+
+
+TODO:
+Deep dream models
+Models that generate adverserial inputs
