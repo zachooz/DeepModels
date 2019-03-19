@@ -1,5 +1,5 @@
 # DeepModels
-Deep learning models for reference and an auto differentiation program.
+A variety of deep learning models for reference and an auto differentiation program.
 
 a2c: Synchronous actor critic RL network used on the cartpole problem
 
