@@ -16,4 +16,5 @@ rnn: Recurrent neural network built to predict the next word
 
 TODO:
 Deep dream models
+
 Models that generate adverserial inputs
